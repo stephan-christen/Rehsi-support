@@ -61,9 +61,13 @@ class Page(HTMLParser):
             self.lang = a.get("lang")
         if tag == "meta" and a.get("http-equiv", "").lower() == "content-security-policy":
             self.has_csp = True
-        link_loads = tag != "link" or a.get("rel") in ("stylesheet", "icon", "preload", "modulepreload")
+        link_loads = tag != "link" or a.get("rel") in (
+            "stylesheet", "icon", "apple-touch-icon", "preload", "modulepreload")
         if tag in LOADING and a.get(LOADING[tag]) and link_loads:
             self.loads.append((tag, a[LOADING[tag]]))
+        if a.get("srcset"):
+            for candidate in a["srcset"].split(","):
+                self.loads.append((tag, candidate.split()[0]))
         if "style" in a and "url(" in a["style"]:
             self.loads.append((tag, "inline style url()"))
         if tag == "a" and a.get("href"):
@@ -94,6 +98,8 @@ def main():
         for tag, url in page.loads:
             if not is_relative(url):
                 problems.append(f"{rel}: <{tag}> loads {url} from outside the site")
+            elif not url.startswith("inline") and not (path.parent / url).resolve().is_file():
+                problems.append(f"{rel}: <{tag}> loads {url}, which does not exist")
         for href in page.links:
             if href.startswith("mailto:") or not is_relative(href):
                 continue
