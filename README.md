@@ -13,6 +13,8 @@ The root page links to all six. App Store Connect takes one privacy policy URL a
 
 Plain HTML and one local stylesheet: no analytics, no web fonts, no scripts. Every page carries a Content-Security-Policy that only allows the site's own stylesheet and images, so the browser itself refuses anything else. `.nojekyll` makes Pages serve the files as they are, without a Jekyll theme.
 
+The logo (`assets/rehsi-logo-256.png`, `assets/rehsi-logo-dark-256.png`), `favicon.png` (32 × 32) and `apple-touch-icon.png` (180 × 180) are scaled copies of the app icon, `Rehsi/Assets.xcassets/AppIcon.appiconset/AppIcon-1024-any.png` and `-dark.png` on Rehsi's `main`. When the app icon changes, scale them again, for example `sips -z 256 256 AppIcon-1024-any.png --out assets/rehsi-logo-256.png`.
+
 ## The responsible person's details
 
 Name, address and email live in **`.env-live`** in the repository root, which git ignores:

@@ -9,6 +9,7 @@
   --line: #d1d1d6;
   --surface: #f2f2f7;
   --accent: #2e6b3a;
+  --logo-tile: transparent;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,6 +20,7 @@
     --line: #3a3a3c;
     --surface: #1c1c1e;
     --accent: #7cc48a;
+    --logo-tile: linear-gradient(#3a3a3c, #1c1c1e);
   }
 }
 
@@ -43,7 +45,7 @@ header {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 8px 16px;
   padding-top: 20px;
   padding-bottom: 12px;
@@ -51,10 +53,32 @@ header {
 }
 
 header .home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-weight: 600;
   color: var(--text);
   text-decoration: none;
 }
+
+/* The app icon, rounded like on iOS. The dark artwork has no background of its own,
+   since iOS draws one behind it, so the page gives it a dark tile. */
+.logo {
+  display: block;
+  border-radius: 22.37%;
+  background: var(--logo-tile);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 2rem;
+}
+
+.brand h1 { margin: 0; }
+
+.logo-large { width: 96px; height: 96px; }
 
 nav.languages a, nav.languages span {
   margin-left: 12px;
