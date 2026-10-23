@@ -13,16 +13,25 @@ The root page links to all six. App Store Connect takes one privacy policy URL a
 
 Plain HTML and one local stylesheet: no analytics, no web fonts, no scripts. Every page carries a Content-Security-Policy that only allows the site's own stylesheet and images, so the browser itself refuses anything else. `.nojekyll` makes Pages serve the files as they are, without a Jekyll theme.
 
-## Placeholders
+## The responsible person's details
 
-The responsible person's details are placeholders, filled in by the owner before the site goes live. Each `[E-Mail]` also appears inside a `mailto:` link, so replace every occurrence.
+Name, address and email live in **`.env-live`** in the repository root, which git ignores:
 
-| | Deutsch | Français | English |
-|---|---|---|---|
-| Name | `[Name]` | `[Nom]` | `[Name]` |
-| Address | `[Adresse]` | `[adresse]` | `[address]` |
-| Email | `[E-Mail]` | `[e-mail]` | `[email]` |
-| Date of the policy | `[Datum]` | `[date]` | `[date]` |
+```
+NAME=…
+ADDRESS=…
+EMAIL=…
+```
+
+Write them into the pages with:
+
+```bash
+python3 scripts/fill_details.py
+```
+
+Each detail is marked in the pages with `data-fill="name"`, `"address"` or `"email"` (the email also inside its `mailto:` link), so the script can be run again whenever `.env-live` changes. The filled-in pages are what gets committed and published. The details are public on the site either way; `.env-live` only keeps them out of the repository until you choose to publish them.
+
+The policy's date (*Stand*, *État*, *Last updated*) is written directly in each privacy page. Change it whenever what the policy says changes.
 
 ## Checks
 
@@ -30,7 +39,7 @@ The responsible person's details are placeholders, filled in by the owner before
 python3 scripts/check_site.py
 ```
 
-Checks that every page exists, has a language and a Content-Security-Policy, that internal links resolve, that nothing is loaded from outside the site, and that the German pages use Swiss spelling (no `ß`). Before going live, run it with `--live`, which also fails while a placeholder is unfilled:
+Checks that every page exists, has a language and a Content-Security-Policy, that internal links resolve, that nothing is loaded from outside the site, and that the German pages use Swiss spelling (no `ß`). Before going live, run it with `--live`, which also fails while a detail is still a placeholder:
 
 ```bash
 python3 scripts/check_site.py --live
@@ -38,8 +47,8 @@ python3 scripts/check_site.py --live
 
 ## Going live
 
-1. Fill in the placeholders and run the check with `--live`.
-2. Settings → Pages → Deploy from a branch → `main`, `/ (root)`.
+1. Run `scripts/fill_details.py`, then the check with `--live`.
+2. Commit the pages, and merge them into `main`. Pages deploys `main` (`/`), so the site updates a minute later.
 3. Put the URLs into App Store Connect and the app's About screen.
 
 ## Keeping it true to the app

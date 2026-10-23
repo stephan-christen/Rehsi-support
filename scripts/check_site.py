@@ -26,6 +26,8 @@ PAGES = [
     "en/help/index.html",
 ]
 
+PRIVACY = {"de/datenschutz/index.html", "fr/confidentialite/index.html", "en/privacy/index.html"}
+
 # Filled in by the owner before the site goes live (see README).
 PLACEHOLDERS = re.compile(
     r"\[(Name|Adresse|E-Mail|Datum|Nom|adresse|e-mail|date|address|email)\]"
@@ -100,6 +102,13 @@ def main():
                 target = target / "index.html"
             if not target.exists():
                 problems.append(f"{rel}: broken link {href}")
+        # The markers scripts/fill_details.py writes into.
+        if rel != "index.html" and 'data-fill="email"' not in text:
+            problems.append(f"{rel}: no data-fill=\"email\" link")
+        if rel in PRIVACY:
+            for field in ("name", "address"):
+                if f'data-fill="{field}"' not in text:
+                    problems.append(f"{rel}: no data-fill=\"{field}\"")
         if page.lang == "de" and "ß" in text:
             problems.append(f"{rel}: ß in a Swiss German page")
         if live:
